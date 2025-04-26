@@ -83,8 +83,8 @@ const getUserBadge = (badge, theme) => {
 };
 
 const formatTopPercentage = (lbRank) => {
-    if (lbRank?.rank === undefined) return "-";
-    if (lbRank?.count === undefined) return "-";
+    if (!lbRank || lbRank.rank === undefined) return "-";
+    if (!lbRank || lbRank.count === undefined) return "-";
     if (lbRank.rank === 1) return "GOAT";
     let percentage = (lbRank.rank / lbRank.count) * 100;
     let formattedPercentage =
