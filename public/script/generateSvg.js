@@ -159,7 +159,7 @@ async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
 
     // Process personal bests data
     let pbTime = {};
-    if (personalbests && userData?.personalBests?.time) {
+    if (personalbests && userData && userData.personalBests && userData.personalBests.time) {
         for (let j = 15; j <= 120; j *= 2) {
             let english_1k = true;
             let english = true;
