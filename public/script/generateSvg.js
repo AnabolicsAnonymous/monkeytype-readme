@@ -150,154 +150,36 @@ async function getOGSvg(userData, theme, badge) {
 }
 
 async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
-    const width = 500;
-    let height = 220;
-    leaderBoards ? (height += 220) : (height += 0);
-    personalbests ? (height += 440) : (height += 0);
+    const width = 900;
+    const height = 260;
     const cssData = await getOutputCSS();
 
     let userImg = await getUserImg(userData, theme);
     let userBadge = getUserBadge(badge, theme);
 
-    let leaderBoardHTML = "";
-    if (leaderBoards == true) {
-        topPercentage15 = formatTopPercentage(
-            userData.allTimeLbs.time["15"]["english"],
-        );
-        topPercentage60 = formatTopPercentage(
-            userData.allTimeLbs.time["60"]["english"],
-        );
-
-        const ordinalNumber = (rank) => {
-            if (rank === undefined || rank === null) return "";
-            if (rank % 10 === 1) return "st";
-            if (rank % 10 === 2) return "nd";
-            if (rank % 10 === 3) return "rd";
-            return "th";
-        };
-
-        const allTimeLbs = userData.allTimeLbs;
-        let rank15 = "-";
-        let rank60 = "-";
-        let ordinalNumber15 = "";
-        let ordinalNumber60 = "";
-
-        try {
-            const time15 = allTimeLbs.time["15"] || {};
-            const time60 = allTimeLbs.time["60"] || {};
-
-            rank15 = !time15.english?.rank ? "-" : time15.english.rank;
-            rank60 = !time60.english?.rank ? "-" : time60.english.rank;
-
-            ordinalNumber15 =
-                typeof time15.english?.rank === "number"
-                    ? ordinalNumber(time15.english.rank)
-                    : "-";
-
-            ordinalNumber60 =
-                typeof time60.english?.rank === "number"
-                    ? ordinalNumber(time60.english.rank)
-                    : "-";
-        } catch (e) {
-            console.log(e);
-            console.log(userData);
-            console.log(userData.allTimeLbs.time);
-            rank15 = "-";
-            rank60 = "-";
-            ordinalNumber15 = "";
-            ordinalNumber60 = "";
-        }
-
-        leaderBoardHTML = `
-            <div class="mt-5 w-full rounded-2xl" style="background-color: ${theme.bgColor}; height: 200px;">
-                <div class="flex h-full items-center justify-center">
-                    <div class="mx-5">
-                        <div class="text-center font-mono text-lg font-medium tracking-wider" style="color: ${theme.subColor};">
-                            All-Time English Leaderboards
-                        </div>
-                        <div class="mt-4 flex justify-center">
-                            <div>
-                                <div class="flex items-center justify-center py-1">
-                                    <div>
-                                        <div class="w-32 text-right font-mono text-lg font-medium tracking-wider"
-                                            style="color: ${theme.subColor};">
-                                            15 seconds
-                                        </div>
-                                        <div class="w-32 text-right font-mono text-xs font-medium tracking-wider"
-                                            style="color: ${theme.subColor};">
-                                            ${topPercentage15}
-                                        </div>
-                                    </div>
-                                    <div class="w-33 ml-6 text-center font-mono text-3xl font-medium tracking-wider"
-                                        style="color: ${theme.textColor};">
-                                        ${rank15}
-                                    </div>
-                                    <div class="w-8 font-mono text-2xl font-medium tracking-wider"
-                                        style="color: ${theme.textColor};">
-                                        ${ordinalNumber15}
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-center py-1">
-                                    <div>
-                                        <div class="w-32 text-right font-mono text-lg font-medium tracking-wider"
-                                            style="color: ${theme.subColor};">
-                                            60 seconds
-                                        </div>
-                                        <div class="w-32 text-right font-mono text-xs font-medium tracking-wider"
-                                                style="color: ${theme.subColor};">
-                                                ${topPercentage60}
-                                        </div>
-                                    </div>
-                                    <div class="w-33 ml-6 text-center font-mono text-3xl font-medium tracking-wider"
-                                        style="color: ${theme.textColor};">
-                                        ${rank60}
-                                    </div>
-                                    <div class="w-8 font-mono text-2xl font-medium tracking-wider"
-                                        style="color: ${theme.textColor};">
-                                        ${ordinalNumber60}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    let personalbestsHTML = "";
-    if (personalbests == true) {
-        let pbTime = {};
+    // Process personal bests data
+    let pbTime = {};
+    if (personalbests && userData?.personalBests?.time) {
         for (let j = 15; j <= 120; j *= 2) {
             let english_1k = true;
             let english = true;
             let english_1k_pb = null;
             let english_pb = null;
             if (userData.personalBests.time[j] != undefined) {
-                for (
-                    let i = 0;
-                    i < userData.personalBests.time[j].length;
-                    i++
-                ) {
+                for (let i = 0; i < userData.personalBests.time[j].length; i++) {
                     if (
-                        userData.personalBests.time[j][i].language ==
-                            "english_1k" &&
-                        userData.personalBests.time[j][i].difficulty ==
-                            "normal" &&
-                        userData.personalBests.time[j][i].punctuation ==
-                            false &&
+                        userData.personalBests.time[j][i].language == "english_1k" &&
+                        userData.personalBests.time[j][i].difficulty == "normal" &&
+                        userData.personalBests.time[j][i].punctuation == false &&
                         english_1k == true
                     ) {
                         english_1k_pb = userData.personalBests.time[j][i];
                         english_1k = false;
                     }
                     if (
-                        userData.personalBests.time[j][i].language ==
-                            "english" &&
-                        userData.personalBests.time[j][i].difficulty ==
-                            "normal" &&
-                        userData.personalBests.time[j][i].punctuation ==
-                            false &&
+                        userData.personalBests.time[j][i].language == "english" &&
+                        userData.personalBests.time[j][i].difficulty == "normal" &&
+                        userData.personalBests.time[j][i].punctuation == false &&
                         english == true
                     ) {
                         english_pb = userData.personalBests.time[j][i];
@@ -331,232 +213,12 @@ async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
                 }
             }
         }
-
-        let pbWords = {};
-        let words = [10, 25, 50, 100];
-        for (let i = 0; i < words.length; i++) {
-            let english_1k = true;
-            let english = true;
-            let english_1k_pb = null;
-            let english_pb = null;
-            if (userData.personalBests.words[words[i]] != undefined) {
-                for (
-                    let j = 0;
-                    j < userData.personalBests.words[words[i]].length;
-                    j++
-                ) {
-                    if (
-                        userData.personalBests.words[words[i]][j].language ==
-                            "english_1k" &&
-                        userData.personalBests.words[words[i]][j].difficulty ==
-                            "normal" &&
-                        userData.personalBests.words[words[i]][j].punctuation ==
-                            false &&
-                        english_1k == true
-                    ) {
-                        english_1k_pb =
-                            userData.personalBests.words[words[i]][j];
-                        english_1k = false;
-                    }
-                    if (
-                        userData.personalBests.words[words[i]][j].language ==
-                            "english" &&
-                        userData.personalBests.words[words[i]][j].difficulty ==
-                            "normal" &&
-                        userData.personalBests.words[words[i]][j].punctuation ==
-                            false &&
-                        english == true
-                    ) {
-                        english_pb = userData.personalBests.words[words[i]][j];
-                        english = false;
-                    }
-                }
-                if (english_1k_pb == null && english_pb == null) {
-                    pbWords[words[i]] = { wpm: "-", acc: "-" };
-                } else if (english_1k_pb != null && english_pb == null) {
-                    pbWords[words[i]] = english_1k_pb;
-                } else if (english_1k_pb == null && english_pb != null) {
-                    pbWords[words[i]] = english_pb;
-                } else {
-                    if (english_1k_pb.wpm > english_pb.wpm) {
-                        pbWords[words[i]] = english_1k_pb;
-                    } else {
-                        pbWords[words[i]] = english_pb;
-                    }
-                }
-            } else {
-                pbWords[words[i]] = { wpm: "-", acc: "-" };
-            }
-            if (pbWords[words[i]].wpm != "-") {
-                pbWords[words[i]].wpm = Math.round(
-                    parseFloat(pbWords[words[i]].wpm),
-                );
-            }
-            if (pbWords[words[i]].acc != "-") {
-                if (
-                    pbWords[words[i]].acc == null ||
-                    pbWords[words[i]].acc == undefined
-                ) {
-                    pbWords[words[i]].acc = "-";
-                } else {
-                    pbWords[words[i]].acc = Math.floor(
-                        parseFloat(pbWords[words[i]].acc),
-                    );
-                }
-            }
-        }
-
-        personalbestsHTML = `
-            <div class="mt-5 w-full rounded-2xl" style="background-color: ${
-                theme.bgColor
-            }; height: 200px;">
-                <div class="flex h-full items-center justify-center">
-                    <div class="mx-5">
-                        <div class="flex items-center justify-around">
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    15 seconds
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["15"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["15"].acc}${
-                                        pbTime["15"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    30 seconds
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["30"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["30"].acc}${
-                                        pbTime["30"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    60 seconds
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["60"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["60"].acc}${
-                                        pbTime["60"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    120 seconds
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["120"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbTime["120"].acc}${
-                                        pbTime["120"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-5 w-full rounded-2xl" style="background-color: ${
-                theme.bgColor
-            }; height: 200px;">
-                <div class="flex h-full items-center justify-center">
-                    <div class="mx-5">
-                        <div class="flex items-center justify-around">
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    10 words
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["10"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["10"].acc}${
-                                        pbWords["10"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    25 words
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["25"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["25"].acc}${
-                                        pbWords["25"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    50 words
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["50"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["50"].acc}${
-                                        pbWords["50"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                            <div class="mx-2 w-26 flex-col items-center justify-center">
-                                <div class="py-1 text-center font-mono text-sm font-medium tracking-wider"
-                                    style="color: ${theme.subColor};">
-                                    100 words
-                                </div>
-                                <div class="py-1 text-center font-mono text-4xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["100"].wpm}
-                                </div>
-                                <div class="py-1 text-center font-mono text-2xl font-medium tracking-wider"
-                                    style="color: ${theme.textColor};">
-                                    ${pbWords["100"].acc}${
-                                        pbWords["100"].acc == "-" ? "" : "%"
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
     }
+
+    // Colors for dark theme
+    const pbLabelColor = theme.subColor || '#b0b8c9';
+    const pbValueColor = theme.textColor || '#fff';
+    const pbSubColor = theme.subColor || '#b0b8c9';
 
     const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}"
@@ -566,47 +228,50 @@ async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
             </style>
             <foreignObject x="0" y="0" width="${width}" height="${height}">
                 <div xmlns="http://www.w3.org/1999/xhtml">
-                    <div class="w-full rounded-2xl" style="background-color: ${
-                        theme.bgColor
-                    }; height: 200px;">
-                        <div class="flex h-full items-center justify-center">
-                            <div class="pr-5">${userImg}</div>
-                            <div>
-                                <div class="font-mono text-3xl font-medium tracking-wider" style="color: ${
-                                    theme.textColor
-                                };">
-                                    ${
-                                        userData == null
-                                            ? "user not found"
-                                            : userData.name
-                                    }
+                    <div class="w-full rounded-2xl flex" style="background-color: ${theme.bgColor}; height: ${height}px;">
+                        <!-- Profile section -->
+                        <div class="flex flex-col items-center justify-center border-r" style="width: 260px; border-color: ${theme.subColor}; height: 100%;">
+                            <div class="mb-4">${userImg}</div>
+                            <div class="text-center">
+                                <div class="font-mono text-2xl font-bold tracking-wider" style="color: ${theme.textColor}; letter-spacing: 0.05em;">
+                                    ${userData == null ? "user not found" : userData.name}
                                 </div>
-                                ${
-                                    badge != null
-                                        ? `<div class="py-1">${userBadge}</div>`
-                                        : ``
-                                }
-                                ${
-                                    userData == null
-                                        ? ""
-                                        : userData.streak > 0
-                                        ? `
-                                        <div class="font-mono text-xs font-medium tracking-wide" style="color: ${theme.subColor};">
-                                            Current streak: ${userData.streak} days
-                                        </div>
-                                    `
-                                        : ``
-                                }
+                                ${badge != null ? `<div class="py-2">${userBadge}</div>` : ``}
+                                ${userData?.streak > 0 ? `
+                                    <div class="font-mono text-base font-medium tracking-wide" style="color: ${theme.subColor}; margin-top: 8px;">
+                                        Current streak: ${userData.streak} days
+                                    </div>
+                                ` : ``}
+                            </div>
+                        </div>
+                        <!-- PB section -->
+                        <div class="flex flex-col justify-center flex-1 px-10">
+                            <div class="font-mono text-2xl font-bold mb-4 text-center" style="color: ${pbValueColor}; letter-spacing: 0.04em;">Personal Records</div>
+                            <div class="flex flex-row gap-10 justify-center items-center" style="min-width: 500px; max-width: 600px; margin: 0 auto;">
+                                <div class="flex flex-col items-center justify-center" style="width: 120px;">
+                                    <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">15s</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["15"]?.wpm || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["15"]?.acc || "-"}${pbTime["15"]?.acc == "-" ? "" : "%"}</div>
                                 </div>
+                                <div class="flex flex-col items-center justify-center" style="width: 120px;">
+                                    <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">30s</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["30"]?.wpm || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["30"]?.acc || "-"}${pbTime["30"]?.acc == "-" ? "" : "%"}</div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center" style="width: 120px;">
+                                    <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">60s</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["60"]?.wpm || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["60"]?.acc || "-"}${pbTime["60"]?.acc == "-" ? "" : "%"}</div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center" style="width: 120px;">
+                                    <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">120s</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["120"]?.wpm || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["120"]?.acc || "-"}${pbTime["120"]?.acc == "-" ? "" : "%"}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div xmlns="http://www.w3.org/1999/xhtml">${leaderBoardHTML}</div>
-
-                <div xmlns="http://www.w3.org/1999/xhtml">${personalbestsHTML}</div>
-
-                <div xmlns="http://www.w3.org/1999/xhtml" class="mt-5"></div>
             </foreignObject>
         </svg>
     `;
