@@ -129,15 +129,11 @@ async function getOGSvg(userData, theme, badge) {
                                         : ``
                                 }
                                 ${
-                                    userData == null
-                                        ? ""
-                                        : userData.streak > 0
-                                        ? `
-                                        <div class="font-mono text-xs font-medium tracking-wide" style="color: ${theme.subColor};">
+                                    userData && userData.streak > 0 ? `
+                                        <div class="font-mono text-base font-medium tracking-wide" style="color: ${theme.subColor}; margin-top: 8px;">
                                             Current streak: ${userData.streak} days
                                         </div>
-                                    `
-                                        : ``
+                                    ` : ``
                                 }
                                 </div>
                         </div>
@@ -237,7 +233,7 @@ async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
                                     ${userData == null ? "user not found" : userData.name}
                                 </div>
                                 ${badge != null ? `<div class="py-2">${userBadge}</div>` : ``}
-                                ${userData?.streak > 0 ? `
+                                ${userData && userData.streak > 0 ? `
                                     <div class="font-mono text-base font-medium tracking-wide" style="color: ${theme.subColor}; margin-top: 8px;">
                                         Current streak: ${userData.streak} days
                                     </div>
@@ -250,23 +246,23 @@ async function getSvg(userData, theme, badge, leaderBoards, personalbests) {
                             <div class="flex flex-row gap-10 justify-center items-center" style="min-width: 500px; max-width: 600px; margin: 0 auto;">
                                 <div class="flex flex-col items-center justify-center" style="width: 120px;">
                                     <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">15s</div>
-                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["15"]?.wpm || "-"}</div>
-                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["15"]?.acc || "-"}${pbTime["15"]?.acc == "-" ? "" : "%"}</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${(pbTime["15"] && pbTime["15"].wpm) || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${(pbTime["15"] && pbTime["15"].acc) || "-"}${(pbTime["15"] && pbTime["15"].acc == "-") ? "" : "%"}</div>
                                 </div>
                                 <div class="flex flex-col items-center justify-center" style="width: 120px;">
                                     <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">30s</div>
-                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["30"]?.wpm || "-"}</div>
-                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["30"]?.acc || "-"}${pbTime["30"]?.acc == "-" ? "" : "%"}</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${(pbTime["30"] && pbTime["30"].wpm) || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${(pbTime["30"] && pbTime["30"].acc) || "-"}${(pbTime["30"] && pbTime["30"].acc == "-") ? "" : "%"}</div>
                                 </div>
                                 <div class="flex flex-col items-center justify-center" style="width: 120px;">
                                     <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">60s</div>
-                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["60"]?.wpm || "-"}</div>
-                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["60"]?.acc || "-"}${pbTime["60"]?.acc == "-" ? "" : "%"}</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${(pbTime["60"] && pbTime["60"].wpm) || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${(pbTime["60"] && pbTime["60"].acc) || "-"}${(pbTime["60"] && pbTime["60"].acc == "-") ? "" : "%"}</div>
                                 </div>
                                 <div class="flex flex-col items-center justify-center" style="width: 120px;">
                                     <div class="font-mono text-lg font-semibold mb-1" style="color: ${pbLabelColor};">120s</div>
-                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${pbTime["120"]?.wpm || "-"}</div>
-                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${pbTime["120"]?.acc || "-"}${pbTime["120"]?.acc == "-" ? "" : "%"}</div>
+                                    <div class="font-mono text-3xl font-bold" style="color: ${pbValueColor};">${(pbTime["120"] && pbTime["120"].wpm) || "-"}</div>
+                                    <div class="font-mono text-base mt-1" style="color: ${pbSubColor};">${(pbTime["120"] && pbTime["120"].acc) || "-"}${(pbTime["120"] && pbTime["120"].acc == "-") ? "" : "%"}</div>
                                 </div>
                             </div>
                         </div>
